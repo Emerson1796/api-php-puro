@@ -1,5 +1,5 @@
-CREATE DATABASE IF NOT EXISTS nome_do_banco;
-USE nome_do_banco;
+CREATE DATABASE IF NOT EXISTS mentes;
+USE mentes;
 
 -- Tabela de Estados com Timestamps e Soft Delete
 CREATE TABLE IF NOT EXISTS estados (
