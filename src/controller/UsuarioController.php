@@ -21,20 +21,32 @@ class UsuarioController {
         return $usuario;
     }
 
-    public function create($nome, $email) {
+    public function create($nome, $email, $enderecoIds = []) {
         $usuario = new Usuario();
         $usuario->setNome($nome);
         $usuario->setEmail($email);
-        $id = $this->repository->save($usuario);
-        return $id;
+        $usuarioId = $this->repository->save($usuario);
+        
+        foreach ($enderecoIds as $enderecoId) {
+            $this->repository->addEnderecoToUsuario($usuarioId, $enderecoId);
+        }
+
+        return $usuarioId;
     }
 
-    public function update($id, $nome, $email) {
+    public function update($id, $nome, $email, $enderecoIds = []) {
         $usuario = new Usuario();
         $usuario->setId($id);
         $usuario->setNome($nome);
         $usuario->setEmail($email);
         $success = $this->repository->save($usuario);
+
+        $this->repository->removeAllEnderecosFromUsuario($id);
+
+        foreach ($enderecoIds as $enderecoId) {
+            $this->repository->addEnderecoToUsuario($id, $enderecoId);
+        }
+
         return $success;
     }
 

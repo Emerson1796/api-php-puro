@@ -21,9 +21,8 @@ class EnderecoController {
         return $endereco;
     }
 
-    public function create($id_usuario, $logradouro, $numero, $complemento, $cep, $id_cidade) {
+    public function create($logradouro, $numero, $complemento, $cep, $id_cidade) {
         $endereco = new Endereco();
-        $endereco->setIdUsuario($id_usuario);
         $endereco->setLogradouro($logradouro);
         $endereco->setNumero($numero);
         $endereco->setComplemento($complemento);
@@ -33,10 +32,9 @@ class EnderecoController {
         return $id;
     }
 
-    public function update($id, $id_usuario, $logradouro, $numero, $complemento, $cep, $id_cidade) {
+    public function update($id, $logradouro, $numero, $complemento, $cep, $id_cidade) {
         $endereco = new Endereco();
         $endereco->setId($id);
-        $endereco->setIdUsuario($id_usuario);
         $endereco->setLogradouro($logradouro);
         $endereco->setNumero($numero);
         $endereco->setComplemento($complemento);

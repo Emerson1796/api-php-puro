@@ -14,7 +14,6 @@ class UsuarioRepository {
     public function findAll() {
         $sql = 'SELECT * FROM usuarios WHERE deleted_at IS NULL';
         $stmt = $this->conexao->query($sql);
-
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
@@ -22,7 +21,6 @@ class UsuarioRepository {
         $sql = 'SELECT * FROM usuarios WHERE id = ? AND deleted_at IS NULL';
         $stmt = $this->conexao->prepare($sql);
         $stmt->execute([$id]);
-
         return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
@@ -55,5 +53,32 @@ class UsuarioRepository {
         $sql = 'UPDATE usuarios SET deleted_at = NOW() WHERE id = ?';
         $stmt = $this->conexao->prepare($sql);
         return $stmt->execute([$id]);
+    }
+
+    public function addEnderecoToUsuario($usuarioId, $enderecoId) {
+        $sql = 'INSERT INTO usuario_endereco (usuario_id, endereco_id) VALUES (?, ?)';
+        $stmt = $this->conexao->prepare($sql);
+        return $stmt->execute([$usuarioId, $enderecoId]);
+    }
+
+    public function removeEnderecoFromUsuario($usuarioId, $enderecoId) {
+        $sql = 'DELETE FROM usuario_endereco WHERE usuario_id = ? AND endereco_id = ?';
+        $stmt = $this->conexao->prepare($sql);
+        return $stmt->execute([$usuarioId, $enderecoId]);
+    }
+
+    public function removeAllEnderecosFromUsuario($usuarioId) {
+        $sql = 'DELETE FROM usuario_endereco WHERE usuario_id = ?';
+        $stmt = $this->conexao->prepare($sql);
+        return $stmt->execute([$usuarioId]);
+    }
+
+    public function findEnderecosByUsuario($usuarioId) {
+        $sql = 'SELECT e.* FROM enderecos e 
+                INNER JOIN usuario_endereco ue ON e.id = ue.endereco_id 
+                WHERE ue.usuario_id = ?';
+        $stmt = $this->conexao->prepare($sql);
+        $stmt->execute([$usuarioId]);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 }
