@@ -3,12 +3,14 @@
 use Src\Controller\UsuarioController;
 use Src\Controller\EstadoController;
 use Src\Controller\CidadeController;
+use Src\Controller\EnderecoController;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
 $usuarioController = new UsuarioController();
 $estadoController = new EstadoController();
 $cidadeController = new CidadeController();
+$enderecoController = new EnderecoController();
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
@@ -100,5 +102,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
     if (preg_match('/\/cidades\/(\d+)/', $_SERVER['REQUEST_URI'], $matches)) {
         $id = $matches[1];
         echo json_encode($cidadeController->delete($id));
+    }
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    if ($_SERVER['REQUEST_URI'] === '/enderecos') {
+        echo json_encode($enderecoController->index());
+    } elseif (preg_match('/\/enderecos\/(\d+)/', $_SERVER['REQUEST_URI'], $matches)) {
+        $id = $matches[1];
+        echo json_encode($enderecoController->show($id));
+    }
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_SERVER['REQUEST_URI'] === '/enderecos') {
+    $data = json_decode(file_get_contents("php://input"), true);
+    echo json_encode($enderecoController->create($data['id_usuario'], $data['logradouro'], $data['numero'], $data['complemento'], $data['cep'], $data['id_cidade']));
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
+    if (preg_match('/\/enderecos\/(\d+)/', $_SERVER['REQUEST_URI'], $matches)) {
+        $id = $matches[1];
+        $data = json_decode(file_get_contents("php://input"), true);
+        echo json_encode($enderecoController->update($id, $data['id_usuario'], $data['logradouro'], $data['numero'], $data['complemento'], $data['cep'], $data['id_cidade']));
+    }
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
+    if (preg_match('/\/enderecos\/(\d+)/', $_SERVER['REQUEST_URI'], $matches)) {
+        $id = $matches[1];
+        echo json_encode($enderecoController->delete($id));
     }
 }
