@@ -2,6 +2,7 @@
 namespace Src\Controller;
 
 use Src\Repository\UsuarioRepository;
+use Illuminate\Support\Facades\Response;
 use Src\Model\Usuario;
 
 class UsuarioController {
@@ -17,8 +18,29 @@ class UsuarioController {
     }
 
     public function show($id) {
-        $usuario = $this->repository->find($id);
-        return $usuario;
+        $rawData = $this->repository->find($id);
+        $usuario = null;
+        $enderecosArray = [];
+
+        foreach ($rawData as $row) {
+            if (!$usuario) {
+                $usuario = [
+                    'id' => $row['id'],
+                    'nome' => $row['nome'],
+                    'email' => $row['email'],
+                ];
+            }
+
+            if ($row['logradouro']) {
+                $enderecoCompleto = "{$row['logradouro']}, {$row['numero']}" . ($row['complemento'] ? ", {$row['complemento']}" : '') . " - {$row['cep']} - {$row['nome_cidade']} - {$row['sigla_estado']}";
+                $enderecosArray[] = $enderecoCompleto;
+            }
+        }
+
+        return Response::json([
+            "user" => $usuario,
+            "addresses" => $enderecosArray
+        ]);
     }
 
     public function create($nome, $email, $enderecoIds = []) {

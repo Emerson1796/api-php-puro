@@ -18,10 +18,16 @@ class UsuarioRepository {
     }
 
     public function find($id) {
-        $sql = 'SELECT * FROM usuarios WHERE id = ? AND deleted_at IS NULL';
+        $sql = 'SELECT u.id, u.nome, u.email, e.logradouro, e.numero, e.complemento, e.cep, c.nome AS nome_cidade, es.sigla AS sigla_estado
+                FROM usuarios u
+                LEFT JOIN enderecos e ON u.id = e.id_usuario
+                LEFT JOIN cidades c ON e.id_cidade = c.id
+                LEFT JOIN estados es ON c.id_estado = es.id
+                WHERE u.id = ? AND u.deleted_at IS NULL';
         $stmt = $this->conexao->prepare($sql);
         $stmt->execute([$id]);
-        return $stmt->fetch(\PDO::FETCH_ASSOC);
+        
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     public function save(Usuario $usuario) {
