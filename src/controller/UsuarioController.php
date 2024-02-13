@@ -52,6 +52,7 @@ class UsuarioController {
 
     public function delete($id) {
         $success = $this->repository->delete($id);
+        $this->repository->removeAllEnderecosFromUsuario($id);
         return $success;
     }
 }
